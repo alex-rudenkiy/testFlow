@@ -61,4 +61,4 @@ k = KubernetesPodOperator(
     do_xcom_push=True,
 )
 
-k.dry_run()
+k.run()
