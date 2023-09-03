@@ -23,29 +23,42 @@ Created with Elyra 3.15.0 pipeline editor using `untitled1.pipeline`.
 
 # Operator source: mainTest.py
 
-op_fdbddb78_18cb_448a_a9ec_fdbaa75cdf74 = KubernetesPodOperator(
-    name="mainTest",
-    namespace="default",
-    image="continuumio/anaconda3@sha256:a2816acd3acda208d92e0bf6c11eb41fda9009ea20f24e123dbf84bb4bd4c4b8",
-    cmds=["sh", "-c"],
-    arguments=[
-        "mkdir -p ./jupyter-work-dir/ && cd ./jupyter-work-dir/ && echo 'Downloading https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/elyra/airflow/bootstrapper.py' && curl --fail -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/elyra/airflow/bootstrapper.py --output bootstrapper.py && echo 'Downloading https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/etc/generic/requirements-elyra.txt' && curl --fail -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/etc/generic/requirements-elyra.txt --output requirements-elyra.txt && python3 -m pip install packaging && python3 -m pip freeze > requirements-current.txt && python3 bootstrapper.py --pipeline-name 'untitled1' --cos-endpoint http://minio-1693764492.minio.svc.cluster.local:9000 --cos-bucket testbucket --cos-directory 'untitled1-0903181853' --cos-dependencies-archive 'mainTest-fdbddb78-18cb-448a-a9ec-fdbaa75cdf74.tar.gz' --file 'mainTest.py' "
-    ],
-    task_id="mainTest",
-    env_vars={
-        "ELYRA_RUNTIME_ENV": "airflow",
-        "AWS_ACCESS_KEY_ID": "rootuser",
-        "AWS_SECRET_ACCESS_KEY": "rootpass123",
-        "ELYRA_ENABLE_PIPELINE_INFO": "True",
-        "ELYRA_RUN_NAME": "untitled1-{{ ts_nodash }}",
-    },
-    volumes=[],
-    volume_mounts=[],
-    secrets=[],
-    annotations={},
-    labels={},
-    tolerations=[],
-    in_cluster=True,
-    config_file="None",
-    dag=dag,
+# op_fdbddb78_18cb_448a_a9ec_fdbaa75cdf74 = KubernetesPodOperator(
+#     name="mainTest",
+#     namespace="default",
+#     image="continuumio/anaconda3@sha256:a2816acd3acda208d92e0bf6c11eb41fda9009ea20f24e123dbf84bb4bd4c4b8",
+#     cmds=["sh", "-c"],
+#     arguments=[
+#         "mkdir -p ./jupyter-work-dir/ && cd ./jupyter-work-dir/ && echo 'Downloading https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/elyra/airflow/bootstrapper.py' && curl --fail -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/elyra/airflow/bootstrapper.py --output bootstrapper.py && echo 'Downloading https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/etc/generic/requirements-elyra.txt' && curl --fail -H 'Cache-Control: no-cache' -L https://raw.githubusercontent.com/elyra-ai/elyra/v3.15.0/etc/generic/requirements-elyra.txt --output requirements-elyra.txt && python3 -m pip install packaging && python3 -m pip freeze > requirements-current.txt && python3 bootstrapper.py --pipeline-name 'untitled1' --cos-endpoint http://minio-1693764492.minio.svc.cluster.local:9000 --cos-bucket testbucket --cos-directory 'untitled1-0903181853' --cos-dependencies-archive 'mainTest-fdbddb78-18cb-448a-a9ec-fdbaa75cdf74.tar.gz' --file 'mainTest.py' "
+#     ],
+#     task_id="mainTest",
+#     env_vars={
+#         "ELYRA_RUNTIME_ENV": "airflow",
+#         "AWS_ACCESS_KEY_ID": "rootuser",
+#         "AWS_SECRET_ACCESS_KEY": "rootpass123",
+#         "ELYRA_ENABLE_PIPELINE_INFO": "True",
+#         "ELYRA_RUN_NAME": "untitled1-{{ ts_nodash }}",
+#     },
+#     volumes=[],
+#     volume_mounts=[],
+#     secrets=[],
+#     annotations={},
+#     labels={},
+#     tolerations=[],
+#     in_cluster=True,
+#     config_file="None",
+#     dag=dag,
+# )
+
+
+k = KubernetesPodOperator(
+    name="hello-dry-run",
+    image="debian",
+    cmds=["bash", "-cx"],
+    arguments=["echo", "10"],
+    labels={"foo": "bar"},
+    task_id="dry_run_demo",
+    do_xcom_push=True,
 )
+
+k.dry_run()
