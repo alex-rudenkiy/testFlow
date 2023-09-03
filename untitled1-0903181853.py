@@ -58,7 +58,6 @@ write_xcom = KubernetesPodOperator(
     do_xcom_push=True,
     on_finish_action="delete_pod",
     in_cluster=True,
-    task_id="write-xcom",
     get_logs=True,
 )
 
