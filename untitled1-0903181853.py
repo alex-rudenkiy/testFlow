@@ -50,15 +50,21 @@ Created with Elyra 3.15.0 pipeline editor using `untitled1.pipeline`.
 #     dag=dag,
 # )
 
-
-k = KubernetesPodOperator(
-    name="hello-dry-run",
-    image="debian",
-    cmds=["bash", "-cx"],
-    arguments=["echo", "10"],
-    labels={"foo": "bar"},
-    task_id="dry_run_demo",
+write_xcom = KubernetesPodOperator(
+    namespace="default",
+    image="alpine",
+    cmds=["sh", "-c", "mkdir -p /airflow/xcom/;echo '[1,2,3,4]' > /airflow/xcom/return.json"],
+    name="write-xcom",
     do_xcom_push=True,
+    on_finish_action="delete_pod",
+    in_cluster=True,
+    task_id="write-xcom",
+    get_logs=True,
 )
 
-k.run()
+pod_task_xcom_result = BashOperator(
+    bash_command="echo \"{{ task_instance.xcom_pull('write-xcom')[0] }}\"",
+    task_id="pod_task_xcom_result",
+)
+
+write_xcom >> pod_task_xcom_result
