@@ -51,7 +51,7 @@ Created with Elyra 3.15.0 pipeline editor using `untitled1.pipeline`.
 # )
 
 kubernetes_min_pod = KubernetesPodOperator(
-    namespace='default',
+    namespace='airflow',
     image="ubuntu:16.04",
     cmds=["bash", "-cx"],
     arguments=["echo", "hello world"],
