@@ -46,6 +46,7 @@ op_31232e44_7f56_4f0e_90b6_46694388cdfc = KubernetesPodOperator(
     },
     volumes=[],
     secrets=[],
+    volume_mounts=[],
     annotations={},
     labels={},
     tolerations=[],
