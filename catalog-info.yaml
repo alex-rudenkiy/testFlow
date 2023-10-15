@@ -9,5 +9,5 @@ metadata:
 spec:
   owner: user:guest
   targets:
-    - ./create-api/backstage-template.yaml
+    - ./backstage-template.yaml
 
