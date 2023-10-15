@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: patch
+  namespace: default  
+  description: A collection of all Synapse Entities
+  annotations:
+    permissions.backstage.io/public-readable: 'true'
+spec:
+  owner: user:guest
+  targets:
+    - ./create-api/backstage-template.yaml
+
