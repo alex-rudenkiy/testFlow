@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  namespace: apimgmt
+  name: {{ cookiecutter.apiName }}
+  description: API from Lowcode
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: {{ cookiecutter.ownerRef }}
+  lifecycle: experimental
+  type: openapi
+  definition:
+    $text: ./openapi.yaml

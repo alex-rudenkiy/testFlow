@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  namespace: apimgmt
+  name: api-{{ cookiecutter.apiName }}
+  description: 'Контейнер для объектов, связанных с API {{ cookiecutter.apiName }}'
+  annotations:
+    permissions.backstage.io/public-readable: 'true'
+spec:
+  targets:
+    - ./api.yaml

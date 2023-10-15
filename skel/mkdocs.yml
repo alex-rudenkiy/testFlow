@@ -1,0 +1,7 @@
+site_name: '{{ cookiecutter.apiName }} API'
+
+nav:
+  - Home: index.md
+
+plugins:
+  - techdocs-core
