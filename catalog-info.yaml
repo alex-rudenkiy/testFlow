@@ -7,7 +7,7 @@ metadata:
   annotations:
     permissions.backstage.io/public-readable: 'true'
 spec:
-  owner: user:guest
+  owner: user:aorudenkiy
   targets:
     - ./backstage-template.yaml
 
