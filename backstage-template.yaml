@@ -1,0 +1,100 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: synapse-apimgmt-api-create
+  namespace: default
+  title: Добавление API
+  description: Регистрация нового API в каталоге
+  tags:
+    - apimgmt
+    - lowcode-module-hidden
+  annotations:
+    permissions.backstage.io/public-readable: 'false'
+    permissions.backstage.io/authenticated-readable: 'false'
+spec:
+  owner: group:auth-keycloak-oidc/admins
+  type: api
+  parameters:
+    - title: Параметры API
+      properties:
+        apiName:
+          title: Уникальное в пределах портала имя API
+          type: string
+          pattern: ^([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$
+          description: 'Должно быть корректным именем для каталога: (1) состоять из латиницы, цифр, дефисов, точек и подчёркиваний; (2) быть от 1 до 63 знаков в длину; (3) начинаться и заканчиваться с латиницы или цифры. Примеры: petstore, 5xx-v2_1'
+        apiDefinition:
+          title: OpenAPI-спецификация
+          type: string
+          ui:widget: textarea
+          ui:options:
+            rows: 20
+          ui:backstage:
+            review:
+              show: true
+              mask: '(too long to display)'
+        ownerRef:
+          title: Владелец API
+          type: string
+          description: Пользователь или группа-владелец API
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - User
+              - Group
+      required:
+        - apiName
+        - apiDefinition
+        - ownerRef
+    - title: Публикация шаблона
+      properties:
+        publish:
+          title: Подключение к Git-репозиторию
+          type: object
+          properties:
+            remoteUrl:
+              title: Git URL репозитория (HTTPS)
+              type: string
+              description: 'Пример: https://git.example.org/scm/group/project.git'
+            branchName:
+              title: Имя ветки репозитория
+              type: string
+              description: 'Ветка должна существовать. Пример: develop'
+          required:
+            - remoteUrl
+            - branchName
+      required:
+        - publish
+  steps:
+    - id: render-template
+      name: Подготовка шаблона API
+      action: fetch:template
+      input:
+        url: ./skel
+        targetPath: ./rendered-skel
+        cookiecutterCompat: true
+        values:
+          apiName: ${{ parameters.apiName }}
+          apiDefinition: ${{ parameters.apiDefinition }}
+          ownerRef: ${{ parameters.ownerRef }}
+    - id: publish-to-git
+      name: Сохранение API в Git-репозиторий
+      action: publish:git:repo
+      input:
+        sourcePath: ./rendered-skel
+        gitRemoteUrl: ${{ parameters.publish.remoteUrl }}
+        branchName: ${{ parameters.publish.branchName }}
+        gitCommitMessage: '[apimgmt] Add API ${{ parameters.apiName }}'
+        useDefaultCred: true
+    - id: catalog-register
+      name: Регистрация API в каталоге
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish-to-git'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+  output:
+    links:
+      - title: Созданный API в каталоге
+        icon: 'catalog'
+        entityRef: api:apimgmt/${{ parameters.apiName }}
+      - title: Созданный API в Git-репозитории
+        url: ${{ steps['publish-to-git'].output.repoContentsUrl }}
